@@ -139,13 +139,14 @@ class LoginHandler(Handler):
         email = self.request.get('email')
         eemail = self.validate_e(email)
         if eusername == "" and eemail == "" and epassword == "":
-            items = {
-                'username': username,
-                'email': email
-            }
-            wt = jinja_env.get_template('welcome.html')
-            html_text = wt.render(items)
-            self.write(html_text)
+            self.redirect('/welcome?username='+username);            
+            # items = {
+                # 'username': username,
+                # 'email': email
+            # }
+            # wt = jinja_env.get_template('welcome.html')
+            # html_text = wt.render(items)
+            # self.write(html_text)
         else:
             values = {
                 'username' : username,
@@ -158,6 +159,16 @@ class LoginHandler(Handler):
             html_login = logt.render(values)
             self.write(html_login)
 
+class WelcomeHandler(Handler):
+    def get(self):
+        username = self.request.get('username')
+        values = {
+                'username' : username,
+                }
+        welt = jinja_env.get_template('welcome.html')
+        html_welcome = welt.render(values)
+        self.write(html_welcome)                
+
         
 app = webapp2.WSGIApplication([
     ('/', MainPage),
@@ -165,4 +176,5 @@ app = webapp2.WSGIApplication([
     ('/fizzbuzz', FBHandler),
     ('/rot13', ROT13Handler),
     ('/login', LoginHandler),
+    ('/welcome', WelcomeHandler),
 ], debug=True)
