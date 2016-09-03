@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Login Udacity Unit 2</title>
+    <!--
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    -->
+</head>
+<body>
+    <form method="post">
+        <table>
+        <tr><th>User:</th>
+            <td><input type="text" name="username"
+                value="{{username}}"></td>
+            <td>
+                <label style='color:red'>{{eusername}}</label>
+            </td></tr>
+        <tr><th>Password:</th>
+            <td><input type="password" name="password">
+            </td><td>
+                <label style='color:red'>{{epassword}}</label>
+            </td></tr>
+        <tr><th>Verify:</th>    
+            <td><input type="password" name="verify"></td>
+        </tr>
+        <tr><th>Email</th>
+            <td>
+                <input type="text" name="email" 
+                value="{{email}}">
+            </td><td>
+                <label style='color:red'>{{eemail}}</label>             
+            </td><tr>
+        <tr><th>&nbsp;</th>
+            <td><input type="submit"></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

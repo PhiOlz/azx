@@ -18,10 +18,20 @@ import os
 import webapp2
 import jinja2
 import string
+import re
 #from string import maketrans
 
+USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+PASS_RE = re.compile(r"^.{3,20}$")
+EMAIL_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
+
 template_dir=os.path.join(os.path.dirname(__file__), 'template')
-jinja_env=jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir))
+#jinja_env=jinja2.Environment(
+#  loader=jinja2.FileSystemLoader(template_dir))
+jinja_env = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(template_dir),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 form="""
 <form action='/testform' method=post>
@@ -85,10 +95,74 @@ class TestHandler(webapp2.RequestHandler):
         q = self.request.get("q");
         self.response.write(self.request)
 
+class LoginHandler(Handler):
+    def validate_u(self, uname):        
+        ru = USER_RE.match(uname)
+        if ru == None:
+            return "Invalid username"
+        return ""        
+    
+    def validate_p(self, p1, p2):
+        if p1=="" or p2=="":
+            return "Enter a valid password"
+            
+        if p1 != p2:
+            return "Password mismatch";
+            
+        rp1 = PASS_RE.match(p1);
+        rp2 = PASS_RE.match(p2);            
+        if rp1 == None or rp2 == None:
+            return "Password invalid"        
+        
+        return ""
+    
+    def validate_e(self, email):
+        err = ""
+        if (email != ""):
+            re = EMAIL_RE.match(email)
+            if re == None:
+                err="Invalid email"        
+        return err
+        
+    def get(self):
+        self.render('login.html')
 
+    def post(self):
+        # Username
+        username = self.request.get('username')
+        eusername = self.validate_u(username)            
+        # Password
+        password = self.request.get('password')
+        verify = self.request.get('verify')
+        epassword = self.validate_p(password, verify)
+        # Email optional
+        email = self.request.get('email')
+        eemail = self.validate_e(email)
+        if eusername == "" and eemail == "" and epassword == "":
+            items = {
+                'username': username,
+                'email': email
+            }
+            wt = jinja_env.get_template('welcome.html')
+            html_text = wt.render(items)
+            self.write(html_text)
+        else:
+            values = {
+                'username' : username,
+                'eusername' : eusername,
+                'epassword' : epassword,
+                'email' : email,
+                'eemail' : eemail
+            }        
+            logt = jinja_env.get_template('login.html')
+            html_login = logt.render(values)
+            self.write(html_login)
+
+        
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/testform', TestHandler),
     ('/fizzbuzz', FBHandler),
     ('/rot13', ROT13Handler),
+    ('/login', LoginHandler),
 ], debug=True)
