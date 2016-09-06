@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blog</title>
+<!-- blogs -->
+</head>
+<body>
+    <h2>Blog</h2>
+    <hr>
+    {%if blogs %}
+        {% for blog in blogs %}            
+            <div class="subject">Subject({{blog.key().id()}}): {{blog.subject}}</div>
+            <div class="date">{{blog.created}}</div>
+            <div class="content">{{blog.content}}</div>
+            <hr>
+        {% endfor %}
+    {%endif%}
+</body>
+</html>
