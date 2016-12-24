@@ -13,7 +13,7 @@ handlers:
   static_dir: css
   
 - url: .*
-  script: blog.app
+  script: cookie.app
 
 libraries:
 - name: webapp2
